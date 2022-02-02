@@ -10,28 +10,58 @@ func (x *TagType) EventMetadata() *v1.EventMetadata {
 	return nil
 }
 
+// SatisfyPreviousCriteria returns if a message satisfies TagType's criteria.
+func (x *TagType) SatisfyPreviousCriteria(name string) bool {
+	return true
+}
+
 // EventMetadata returns event metadata of RepeatedFieldType.
 func (x *RepeatedFieldType) EventMetadata() *v1.EventMetadata {
 	return nil
 }
 
+// SatisfyPreviousCriteria returns if a message satisfies RepeatedFieldType's criteria.
+func (x *RepeatedFieldType) SatisfyPreviousCriteria(name string) bool {
+	return true
+}
+
+var packageSentEventMetadata = &v1.EventMetadata{
+	Name:         "events/package_sent",
+	ParentStream: "",
+	LastEvent:    false,
+}
+
 // EventMetadata returns event metadata of PackageSent.
 func (x *PackageSent) EventMetadata() *v1.EventMetadata {
-	return &v1.EventMetadata{
-		Name:         "events/package_sent",
-		ParentStream: "",
-		LastEvent:    false,
-	}
+	return packageSentEventMetadata
+}
+
+// SatisfyPreviousCriteria returns if a message satisfies PackageSent's criteria.
+func (x *PackageSent) SatisfyPreviousCriteria(name string) bool {
+	return true
+}
+
+var packageReceivedPreviousTypeURLs = []string{
+	"types.v1.PackageSent",
+}
+var packageReceivedEventMetadata = &v1.EventMetadata{
+	Name:             "events/package_received",
+	ParentStream:     "",
+	LastEvent:        false,
+	PreviousTypeUrls: packageReceivedPreviousTypeURLs,
 }
 
 // EventMetadata returns event metadata of PackageReceived.
 func (x *PackageReceived) EventMetadata() *v1.EventMetadata {
-	return &v1.EventMetadata{
-		Name:         "events/package_received",
-		ParentStream: "",
-		LastEvent:    false,
-		PreviousTypeUrls: []string{
-			"types.v1.PackageSent",
-		},
+	return packageReceivedEventMetadata
+}
+
+// SatisfyPreviousCriteria returns if a message satisfies PackageReceived's criteria.
+func (x *PackageReceived) SatisfyPreviousCriteria(name string) bool {
+	for _, url := range packageReceivedPreviousTypeURLs {
+		if url == name {
+			return true
+		}
 	}
+	return false
 }

@@ -20,7 +20,6 @@ import (
 	"github.com/dio/kakas/test/generated"
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
-	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/testing/protocmp"
 )
 
@@ -36,5 +35,6 @@ func TestGenerated(t *testing.T) {
 
 	c := &generated.PackageSent{}
 	d := &generated.PackageReceived{}
-	require.Equal(t, c.ProtoReflect().Descriptor().FullName(), protoreflect.FullName(d.EventMetadata().PreviousTypeUrls[0]))
+	// The current stored data is `c`, when `d` comes, it should satisfy previous criteria.
+	require.True(t, d.SatisfyPreviousCriteria(string(c.ProtoReflect().Descriptor().FullName())))
 }
