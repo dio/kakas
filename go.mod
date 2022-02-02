@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/google/go-cmp v0.5.7
+	github.com/iancoleman/strcase v0.2.0
 	github.com/stretchr/testify v1.7.0
 	google.golang.org/protobuf v1.27.1
 )

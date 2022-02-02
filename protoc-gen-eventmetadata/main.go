@@ -19,6 +19,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 
 	v1 "github.com/dio/kakas/generated/eventmetadata/v1"
+	"github.com/iancoleman/strcase"
 )
 
 var (
@@ -60,28 +61,57 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) {
 			opts := message.Desc.Options().ProtoReflect()
 			if opts.Has(eventMetadataTypeDescriptor) {
 				v := opts.Get(eventMetadataTypeDescriptor)
-				metadata = v.Message().Interface().(*v1.EventMetadata)
+				m, ok := v.Message().Interface().(*v1.EventMetadata)
+				if ok {
+					metadata = m
+				}
 			}
 
 			typeName := message.GoIdent.GoName
-			// Generate EventMetadata() method for this type. We statically extract the information.
-			p.P(`// EventMetadata returns event metadata of `, typeName, `.`)
-			p.P(`func (x *`, typeName, `) EventMetadata() *`, protoEventMetadataIdent, `{`)
+			varNamePrefix := strcase.ToLowerCamel(typeName)
+			previousTypeURLsVarName := varNamePrefix + "PreviousTypeURLs"
+			eventMetadataVarName := varNamePrefix + "EventMetadata"
+
 			if metadata != nil {
-				p.P(`return &`, protoEventMetadataIdent, `{`)
+				if len(metadata.PreviousTypeUrls) > 0 {
+					p.P(`var `, previousTypeURLsVarName, ` = []string{`)
+					for _, typeURL := range metadata.PreviousTypeUrls {
+						p.P(`"`, typeURL, `",`)
+					}
+					p.P(`}`)
+				}
+
+				p.P(`var `, eventMetadataVarName, ` = &`, protoEventMetadataIdent, `{`)
 				p.P(`Name:"`, metadata.GetName(), `",`)
 				p.P(`ParentStream:"`, metadata.GetParentStream(), `",`)
 				p.P(`LastEvent:`, metadata.GetLastEvent(), `,`)
 				if len(metadata.PreviousTypeUrls) > 0 {
-					p.P(`PreviousTypeUrls: []string{`)
-					for _, typeURL := range metadata.PreviousTypeUrls {
-						p.P(`"`, typeURL, `",`)
-					}
-					p.P(`},`)
+					p.P(`PreviousTypeUrls: `, previousTypeURLsVarName, `,`)
 				}
 				p.P(`}`)
+			}
+
+			// Generate EventMetadata() method for this type. We statically extract the information.
+			p.P(`// EventMetadata returns event metadata of `, typeName, `.`)
+			p.P(`func (x *`, typeName, `) EventMetadata() *`, protoEventMetadataIdent, `{`)
+			if metadata != nil {
+				p.P(`return `, eventMetadataVarName)
 			} else {
 				p.P(`return nil`)
+			}
+			p.P(`}`)
+
+			p.P(`// SatisfyPreviousCriteria returns if a message satisfies `, typeName, `'s criteria.`)
+			p.P(`func (x *`, typeName, `) SatisfyPreviousCriteria(name string) bool {`)
+			if metadata != nil && len(metadata.PreviousTypeUrls) > 0 {
+				p.P(`for _, url := range `, previousTypeURLsVarName, ` {`)
+				p.P(`if url == name {`)
+				p.P(`return true`)
+				p.P(`}`)
+				p.P(`}`)
+				p.P(`return false`)
+			} else {
+				p.P(`return true`)
 			}
 			p.P(`}`)
 			process(message.Messages)
