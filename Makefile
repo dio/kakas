@@ -52,7 +52,7 @@ license: $(addlicense) ## To add license
 # Override lint cache directory. https://golangci-lint.run/usage/configuration/#cache.
 export GOLANGCI_LINT_CACHE=$(CACHE_DIR)/golangci-lint
 lint: .golangci.yml $(golangci-lint) ## Lint all Go sources
-	$(golangci-lint) run --timeout 5m --config $< ./...
+	@$(golangci-lint) run --timeout 5m --config $< ./...
 
 check: lint license
 
