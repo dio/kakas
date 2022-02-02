@@ -1,0 +1,3 @@
+version: v1
+directories:
+  - protoc-gen-eventmetadata/proto

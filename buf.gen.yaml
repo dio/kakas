@@ -13,5 +13,8 @@
 # limitations under the License.
 
 version: v1
-deps:
-  - buf.build/kakas/protoc-gen-eventmetadata
+
+plugins:
+  - name: go
+    out: generated
+    opt: paths=source_relative

@@ -17,10 +17,9 @@ version: v1
 plugins:
   - name: go
     out: generated
-    opt: paths=source_relative
   - name: deepcopy
     out: generated
-    opt: paths=source_relative
   - name: jsonshim
     out: generated
-    opt: paths=source_relative
+  - name: eventmetadata
+    out: generated

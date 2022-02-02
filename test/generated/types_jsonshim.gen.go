@@ -24,3 +24,23 @@ func (x *RepeatedFieldType) MarshalJSON() ([]byte, error) {
 func (x *RepeatedFieldType) UnmarshalJSON(b []byte) error {
 	return protojson.Unmarshal(b, x)
 }
+
+// MarshalJSON is a custom marshaler forPackageSent.
+func (x *PackageSent) MarshalJSON() ([]byte, error) {
+	return protojson.Marshal(x)
+}
+
+// UnmarshalJSON is a custom marshaler forPackageSent.
+func (x *PackageSent) UnmarshalJSON(b []byte) error {
+	return protojson.Unmarshal(b, x)
+}
+
+// MarshalJSON is a custom marshaler forPackageReceived.
+func (x *PackageReceived) MarshalJSON() ([]byte, error) {
+	return protojson.Marshal(x)
+}
+
+// UnmarshalJSON is a custom marshaler forPackageReceived.
+func (x *PackageReceived) UnmarshalJSON(b []byte) error {
+	return protojson.Unmarshal(b, x)
+}

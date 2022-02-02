@@ -34,18 +34,24 @@ proto_tools := \
 	$(buf) \
 	$(protoc-gen-go)
 
-export PATH := $(root_dir)test:$(PATH)
+export PATH := $(root_dir)test:$(go_tools_dir):$(PATH)
+
+gen: $(proto_tools)
+	@$(buf) generate
+
 test: $(proto_tools)
 	@$(call go-build,protoc-gen-deepcopy)
 	@$(call go-build,protoc-gen-jsonshim)
-	cd $(root_dir)test && buf generate && go test ./...
+	@$(call go-build,protoc-gen-eventmetadata)
+	@cd test && $(buf) generate
+	@go test ./test/...
 
 define go-build
 	go build -o $(root_dir)test/$1 ./$1
 endef
 
 license_ignore :=
-license_files  := test Makefile Tools.mk protoc-gen-deepcopy protoc-gen-jsonshim
+license_files  := test Makefile Tools.mk protoc-gen-*
 license: $(addlicense) ## To add license
 	@$(addlicense) $(license_ignore) -c "Dhi Aurrahman"  $(license_files) 1>/dev/null 2>&1
 
@@ -54,7 +60,7 @@ export GOLANGCI_LINT_CACHE=$(CACHE_DIR)/golangci-lint
 lint: .golangci.yml $(golangci-lint) ## Lint all Go sources
 	@$(golangci-lint) run --timeout 5m --config $< ./...
 
-check: lint license
+check: gen lint license
 
 $(go_tools_dir)/%:
 	@GOBIN=$(go_tools_dir) go install $($(notdir $@)@v)

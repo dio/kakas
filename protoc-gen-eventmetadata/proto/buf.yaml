@@ -13,5 +13,4 @@
 # limitations under the License.
 
 version: v1
-deps:
-  - buf.build/kakas/protoc-gen-eventmetadata
+name: buf.build/kakas/protoc-gen-eventmetadata
