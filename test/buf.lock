@@ -4,4 +4,4 @@ deps:
   - remote: buf.build
     owner: kakas
     repository: protoc-gen-eventmetadata
-    commit: 7747333b5abe49b68c60b74d3f515234
+    commit: 9d219bc9b91d4a2c9eff2a08e7e26d8f

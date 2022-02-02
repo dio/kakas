@@ -21,7 +21,7 @@
 package generated
 
 import (
-	_ "github.com/dio/kakas/protoc-gen-eventmetadata/generated/eventmetadata/v1"
+	_ "github.com/dio/kakas/generated/eventmetadata/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
