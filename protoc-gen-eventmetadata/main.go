@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This is a fork of istio.io/tools/cmd/protoc-gen-deepcopy.
-
 package main
 
 import (
@@ -56,7 +54,7 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) {
 			}
 
 			typeName := message.GoIdent.GoName
-			// Generate EventMetadata() method for this type
+			// Generate EventMetadata() method for this type.
 			p.P(`// EventMetadata returns event metadata of `, typeName, `.`)
 			p.P(`func (x *`, typeName, `) EventMetadata() *`, protoEventMetadataIdent, `{`)
 			p.P(`m := x.ProtoReflect()`)
@@ -70,7 +68,7 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) {
 			process(message.Messages)
 		}
 	}
-	// write out globals
+	// Write out globals.
 	p.P(`var (`)
 	p.P(`eventMetadataTypeDescriptor =`, protoEventMetadataTypeDescriptor)
 	p.P(`)`)
