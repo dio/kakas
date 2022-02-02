@@ -14,4 +14,5 @@
 
 addlicense@v    := github.com/google/addlicense@2b44b367595c
 buf@v           := github.com/bufbuild/buf/cmd/buf@v1.0.0-rc6
+golangci-lint@v := github.com/golangci/golangci-lint/cmd/golangci-lint@v1.43.0
 protoc-gen-go@v := google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1

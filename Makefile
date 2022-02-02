@@ -27,6 +27,7 @@ go_tools_dir := $(CACHE_DIR)/tools/go
 # Go-based tools.
 addlicense    := $(go_tools_dir)/addlicense
 buf           := $(go_tools_dir)/buf
+golangci-lint := $(go_tools_dir)/golangci-lint
 protoc-gen-go := $(go_tools_dir)/protoc-gen-go
 
 proto_tools := \
@@ -47,6 +48,13 @@ license_ignore :=
 license_files  := test Makefile Tools.mk protoc-gen-deepcopy protoc-gen-jsonshim
 license: $(addlicense) ## To add license
 	@$(addlicense) $(license_ignore) -c "Dhi Aurrahman"  $(license_files) 1>/dev/null 2>&1
+
+# Override lint cache directory. https://golangci-lint.run/usage/configuration/#cache.
+export GOLANGCI_LINT_CACHE=$(CACHE_DIR)/golangci-lint
+lint: .golangci.yml $(golangci-lint) ## Lint all Go sources
+	$(golangci-lint) run --timeout 5m --config $< ./...
+
+check: lint license
 
 $(go_tools_dir)/%:
 	@GOBIN=$(go_tools_dir) go install $($(notdir $@)@v)
