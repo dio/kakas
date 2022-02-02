@@ -20,6 +20,7 @@ import (
 	"github.com/dio/kakas/test/generated"
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/testing/protocmp"
 )
 
@@ -32,4 +33,8 @@ func TestGenerated(t *testing.T) {
 	require.NoError(t, err)
 	require.NoError(t, a.UnmarshalJSON(bytes))
 	require.True(t, cmp.Equal(a, b, protocmp.Transform()))
+
+	c := &generated.PackageSent{}
+	d := &generated.PackageReceived{}
+	require.Equal(t, c.ProtoReflect().Descriptor().FullName(), protoreflect.FullName(d.EventMetadata().PreviousTypeUrls[0]))
 }
