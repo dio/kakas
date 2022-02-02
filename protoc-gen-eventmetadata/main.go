@@ -17,6 +17,12 @@ package main
 import (
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/descriptorpb"
+
+	v1 "github.com/dio/kakas/generated/eventmetadata/v1"
+)
+
+var (
+	eventMetadataTypeDescriptor = v1.E_EventMetadata.TypeDescriptor()
 )
 
 func main() {
@@ -53,17 +59,34 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) {
 				continue
 			}
 
+			// Extract the event metadata of a message.
+			var metadata *v1.EventMetadata
+			opts := message.Desc.Options().ProtoReflect()
+			if opts.Has(eventMetadataTypeDescriptor) {
+				v := opts.Get(eventMetadataTypeDescriptor)
+				metadata = v.Message().Interface().(*v1.EventMetadata)
+			}
+
 			typeName := message.GoIdent.GoName
-			// Generate EventMetadata() method for this type.
+			// Generate EventMetadata() method for this type. We statically extract the information.
 			p.P(`// EventMetadata returns event metadata of `, typeName, `.`)
 			p.P(`func (x *`, typeName, `) EventMetadata() *`, protoEventMetadataIdent, `{`)
-			p.P(`m := x.ProtoReflect()`)
-			p.P(`opts := m.Descriptor().Options().ProtoReflect()`)
-			p.P(`if opts.Has(eventMetadataTypeDescriptor) {`)
-			p.P(`v := opts.Get(eventMetadataTypeDescriptor)`)
-			p.P(`return v.Message().Interface().(*`, protoEventMetadataIdent, `)`)
-			p.P(`}`)
-			p.P(`return nil`)
+			if metadata != nil {
+				p.P(`return &`, protoEventMetadataIdent, `{`)
+				p.P(`Name:"`, metadata.GetName(), `",`)
+				p.P(`ParentStream:"`, metadata.GetParentStream(), `",`)
+				p.P(`LastEvent:`, metadata.GetLastEvent(), `,`)
+				if len(metadata.PreviousTypeUrls) > 0 {
+					p.P(`PreviousTypeUrls: []string{`)
+					for _, typeURL := range metadata.PreviousTypeUrls {
+						p.P(`"`, typeURL, `",`)
+					}
+					p.P(`},`)
+				}
+				p.P(`}`)
+			} else {
+				p.P(`return nil`)
+			}
 			p.P(`}`)
 			process(message.Messages)
 		}

@@ -11,44 +11,31 @@ var (
 
 // EventMetadata returns event metadata of TagType.
 func (x *TagType) EventMetadata() *v1.EventMetadata {
-	m := x.ProtoReflect()
-	opts := m.Descriptor().Options().ProtoReflect()
-	if opts.Has(eventMetadataTypeDescriptor) {
-		v := opts.Get(eventMetadataTypeDescriptor)
-		return v.Message().Interface().(*v1.EventMetadata)
-	}
 	return nil
 }
 
 // EventMetadata returns event metadata of RepeatedFieldType.
 func (x *RepeatedFieldType) EventMetadata() *v1.EventMetadata {
-	m := x.ProtoReflect()
-	opts := m.Descriptor().Options().ProtoReflect()
-	if opts.Has(eventMetadataTypeDescriptor) {
-		v := opts.Get(eventMetadataTypeDescriptor)
-		return v.Message().Interface().(*v1.EventMetadata)
-	}
 	return nil
 }
 
 // EventMetadata returns event metadata of PackageSent.
 func (x *PackageSent) EventMetadata() *v1.EventMetadata {
-	m := x.ProtoReflect()
-	opts := m.Descriptor().Options().ProtoReflect()
-	if opts.Has(eventMetadataTypeDescriptor) {
-		v := opts.Get(eventMetadataTypeDescriptor)
-		return v.Message().Interface().(*v1.EventMetadata)
+	return &v1.EventMetadata{
+		Name:         "events/package_sent",
+		ParentStream: "",
+		LastEvent:    false,
 	}
-	return nil
 }
 
 // EventMetadata returns event metadata of PackageReceived.
 func (x *PackageReceived) EventMetadata() *v1.EventMetadata {
-	m := x.ProtoReflect()
-	opts := m.Descriptor().Options().ProtoReflect()
-	if opts.Has(eventMetadataTypeDescriptor) {
-		v := opts.Get(eventMetadataTypeDescriptor)
-		return v.Message().Interface().(*v1.EventMetadata)
+	return &v1.EventMetadata{
+		Name:         "events/package_received",
+		ParentStream: "",
+		LastEvent:    false,
+		PreviousTypeUrls: []string{
+			"types.v1.PackageSent",
+		},
 	}
-	return nil
 }
