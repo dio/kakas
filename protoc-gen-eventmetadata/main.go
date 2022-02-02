@@ -56,7 +56,7 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) {
 			}
 
 			typeName := message.GoIdent.GoName
-			// Generate DeepCopyInto() method for this type
+			// Generate EventMetadata() method for this type
 			p.P(`// EventMetadata returns event metadata of `, typeName, `.`)
 			p.P(`func (x *`, typeName, `) EventMetadata() *`, protoEventMetadataIdent, `{`)
 			p.P(`m := x.ProtoReflect()`)
