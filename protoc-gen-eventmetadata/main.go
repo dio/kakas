@@ -61,7 +61,10 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) {
 			opts := message.Desc.Options().ProtoReflect()
 			if opts.Has(eventMetadataTypeDescriptor) {
 				v := opts.Get(eventMetadataTypeDescriptor)
-				metadata = v.Message().Interface().(*v1.EventMetadata)
+				m, ok := v.Message().Interface().(*v1.EventMetadata)
+				if ok {
+					metadata = m
+				}
 			}
 
 			typeName := message.GoIdent.GoName
