@@ -5,10 +5,6 @@ import (
 	v1 "github.com/dio/kakas/generated/eventmetadata/v1"
 )
 
-var (
-	eventMetadataTypeDescriptor = v1.E_EventMetadata.TypeDescriptor()
-)
-
 // EventMetadata returns event metadata of TagType.
 func (x *TagType) EventMetadata() *v1.EventMetadata {
 	return nil
