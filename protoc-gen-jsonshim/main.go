@@ -35,7 +35,7 @@ func main() {
 }
 
 func generateFile(gen *protogen.Plugin, file *protogen.File) {
-	filename := file.GeneratedFilenamePrefix + "_jsonshim.gen.go"
+	filename := file.GeneratedFilenamePrefix + "_json.gen.go"
 	p := gen.NewGeneratedFile(filename, file.GoImportPath)
 	protoMarshalIdent := protogen.GoIdent{
 		GoName:       "Marshal",
